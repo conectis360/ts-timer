@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, type ReactNode } from "react";
 
 type Timer = {
   name: string;
@@ -16,4 +16,37 @@ type TimersContextValue = TimerState & {
   stopTimers: () => void;
 };
 
-const TimerContext = createContext<TimersContextValue | null>(null);
+const TimersContext = createContext<TimersContextValue | null>(null);
+
+export function useTimersContext() {
+  //custom hooks, uma função que é reconhecida pelo react como um hook
+  const timerContext = useContext(TimersContext);
+
+  if (timerContext === null) {
+    throw new Error("Erro!");
+  }
+
+  return timerContext;
+}
+
+type TimersContextProviderProps = {
+  children: ReactNode;
+};
+
+export default function TimersContextProvider({
+  children,
+}: TimersContextProviderProps) {
+  // responsável por manejar e permitir que usem o contexto
+  const context: TimersContextValue = {
+    timers: [],
+    isRunning: false,
+    addTimer(timerData) {},
+    startTimer() {},
+    stopTimers() {},
+  };
+  return (
+    <TimersContextProvider.Provider value={context}>
+      {children}
+    </TimersContextProvider.Provider>
+  );
+}
