@@ -46,7 +46,31 @@ type Action = {
 
 function timersReducer(state: TimerState, action: Action): TimerState {
   //react vai executar essa ação, ele vai te entregar o estado e a ação, é teu trabalho realizar algo com eles
-  
+  // nunca manipular o estado diretamente, sempre retornar um novo estado. por isso ..state
+  if (action.type === "ADD_TIMER") {
+    return {
+      ...state,
+      timers: [
+        ...state.timers,
+        {
+          name,
+          duration,
+        },
+      ],
+    };
+  }
+  if (action.type === "START_TIMERS") {
+    return {
+      ...state,
+      isRunning: true,
+    };
+  }
+  if (action.type === "STOP_TIMERS") {
+    return {
+      ...state,
+      isRunning: false,
+    };
+  }
 }
 
 export default function TimersContextProvider({
