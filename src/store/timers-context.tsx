@@ -40,9 +40,20 @@ type TimersContextProviderProps = {
 
 //é comum trabalhar com type Action
 
-type Action = {
-  type: "ADD_TIMER" | "START_TIMERS" | "STOP_TIMERS";
+type StartTimersAction = {
+  type: "START_TIMERS";
 };
+
+type StopTimersAction = {
+  type: "STOP_TIMERS";
+};
+
+type AddTimerAction = {
+  type: "ADD_TIMER";
+  payload: Timer;
+};
+
+type Action = StartTimersAction | StopTimersAction | AddTimerAction;
 
 function timersReducer(state: TimerState, action: Action): TimerState {
   //react vai executar essa ação, ele vai te entregar o estado e a ação, é teu trabalho realizar algo com eles
@@ -53,8 +64,8 @@ function timersReducer(state: TimerState, action: Action): TimerState {
       timers: [
         ...state.timers,
         {
-          name,
-          duration,
+          name: action.payload.name,
+          duration: action.payload.duration,
         },
       ],
     };
@@ -71,6 +82,8 @@ function timersReducer(state: TimerState, action: Action): TimerState {
       isRunning: false,
     };
   }
+
+  return state;
 }
 
 export default function TimersContextProvider({
@@ -82,10 +95,10 @@ export default function TimersContextProvider({
   const [timerState, dispatch] = useReducer(timersReducer, initialState);
 
   const context: TimersContextValue = {
-    timers: [],
-    isRunning: false,
+    timers: timerState.timers,
+    isRunning: timerState.isRunning,
     addTimer(timerData) {
-      dispatch({ type: "ADD_TIMER" });
+      dispatch({ type: "ADD_TIMER", payload: timerData });
     },
     startTimer() {
       dispatch({ type: "START_TIMERS" });
